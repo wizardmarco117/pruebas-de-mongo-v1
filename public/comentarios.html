@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver y Eliminar Comentarios</title>
+    <style>
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="crear-usuario.html">Crear Usuario</a>
+        <a href="eliminar-usuario.html">Eliminar Usuario</a>
+        <a href="login.html">Iniciar Sesión</a>
+        <a href="comentarios.html">Ver Comentarios</a>
+        <a href="crear-comentario.html">Crear Comentario</a>
+    </nav>
+
+    <h1>Comentarios</h1>
+    <div id="comentarios"></div>
+
+    <script>
+        async function cargarComentarios() {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/comentarios', {
+                headers: { 'Authorization': token }
+            });
+            const comentarios = await response.json();
+            const comentariosDiv = document.getElementById('comentarios');
+            comentariosDiv.innerHTML = '';
+
+            comentarios.forEach(comentario => {
+                const comentarioDiv = document.createElement('div');
+                comentarioDiv.innerHTML = `
+                    <p><strong>${comentario.nombre}</strong>: ${comentario.comentario}</p>
+                    <button onclick="eliminarComentario('${comentario._id}')">Eliminar</button>
+                    <hr>
+                `;
+                comentariosDiv.appendChild(comentarioDiv);
+            });
+        }
+
+        async function eliminarComentario(id) {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/comentarios/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': token }
+            });
+
+            if (response.ok) {
+                alert('Comentario eliminado exitosamente');
+                cargarComentarios();
+            } else {
+                alert('Error al eliminar el comentario');
+            }
+        }
+
+        cargarComentarios();
+    </script>
+</body>
+</html>

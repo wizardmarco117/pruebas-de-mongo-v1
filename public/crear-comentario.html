@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Comentario</title>
+    <style>
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="crear-usuario.html">Crear Usuario</a>
+        <a href="eliminar-usuario.html">Eliminar Usuario</a>
+        <a href="login.html">Iniciar Sesión</a>
+        <a href="comentarios.html">Ver Comentarios</a>
+        <a href="crear-comentario.html">Crear Comentario</a>
+    </nav>
+
+    <h1>Crear Comentario</h1>
+    <form id="crearComentarioForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <br>
+        <label for="comentario">Comentario:</label>
+        <textarea id="comentario" name="comentario" required></textarea>
+        <br>
+        <button type="submit">Guardar Comentario</button>
+    </form>
+
+    <script>
+        document.getElementById('crearComentarioForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const comentario = document.getElementById('comentario').value;
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('/guardar-comentario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: JSON.stringify({ nombre, comentario })
+            });
+
+            if (response.ok) {
+                alert('Comentario guardado exitosamente');
+                document.getElementById('crearComentarioForm').reset();
+            } else {
+                alert('Error al guardar el comentario');
+            }
+        });
+    </script>
+</body>
+</html>
